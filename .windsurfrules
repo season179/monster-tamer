@@ -1,0 +1,73 @@
+# AI Coding Assistant Rules for a PhaserJS + TypeScript + Vite Project
+
+## PhaserJS-Specific Rules
+1. **Scene Management**  
+   - Use Phaser’s `Scene` class for organising game states and logic.  
+   - Keep each scene self-contained by handling its assets, logic, and transitions internally.
+
+2. **Asset Loading**  
+   - Use the `preload` method in each scene to load required assets.  
+   - Store asset keys as constants or in a centralised `assets` module for easy reuse.
+
+3. **Physics**  
+   - When enabling physics, specify the physics engine configuration explicitly (e.g., Arcade, Matter).  
+   - Group related game objects into physics groups where possible.
+
+4. **Event Handling**  
+   - Use Phaser’s built-in event system for communication between game objects or scenes.  
+   - Avoid hardcoding events; instead, define them as constants for consistency.
+
+5. **Game Configuration**  
+   - Store global game settings in a centralised `config` object to be passed into `Phaser.Game`.
+
+## TypeScript-Specific Rules
+1. **Strong Typing**  
+   - Define interfaces and types for all Phaser objects, including sprites, inputs, and game configurations.  
+   - Use TypeScript enums for constants like game states, key codes, and asset keys.
+
+2. **Modules and Imports**  
+   - Divide code into logically organised modules (e.g., `scenes`, `components`, `utils`).  
+   - Use ES6 imports/exports to manage dependencies.
+
+3. **Type Annotations**  
+   - Explicitly annotate return types of functions and methods.  
+   - Use generics where applicable to type Phaser containers like `Group` or `Physics.Arcade.Group`.
+
+## Vite-Specific Rules
+1. **Asset Handling**  
+   - Store all assets (e.g., images, audio, and other resources) in the `public/assets` directory, rather than under `src`.  
+   - Use Vite’s asset management to import assets as modules, allowing them to be referenced in game scenes.
+
+2. **Hot Module Replacement (HMR)**  
+   - Ensure the game supports HMR for rapid development by reloading scenes or components as necessary.  
+   - Use Vite’s development server for local testing and debugging.
+
+3. **Configuration**  
+   - Customise Vite’s `vite.config.ts` file to define aliases for directories like `src/scenes` or `src/components`.  
+   - Optimise build output by configuring rollup options for Phaser’s global constants.
+
+4. **Plugin Integration**  
+   - Use Vite plugins like `vite-plugin-typescript-checker` to catch type errors during development.  
+   - Configure Vite plugins to handle Phaser-specific quirks, such as tree-shaking unnecessary modules.
+
+## Game Structure Rules
+1. **Directory Layout**  
+   - Follow a directory structure such as:
+     ```
+     public/
+       assets/
+     src/
+       scenes/
+       components/
+       utils/
+       config/
+     ```
+
+2. **Asset Organisation**  
+   - Place all assets (e.g., images, sounds, spritesheets) in the `public/assets` folder, organised by type.
+
+3. **Reusability**  
+   - Store reusable game logic (e.g., helper functions, common UI elements) in the `utils` or `components` folder.
+
+4. **Configuration Separation**  
+   - Keep game configurations (e.g., canvas size, background colour, physics settings) in a separate `config` module.
