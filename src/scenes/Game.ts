@@ -1,30 +1,58 @@
-import { Scene } from 'phaser';
+import { Scene } from "phaser";
+import { BATTLE_ASSET_KEYS, BATTLE_BACKGROUND_ASSET_KEYS, HEALTH_BAR_ASSET_KEYS, MONSTER_ASSET_KEYS } from "../assets/assets-keys";
 
-export class Game extends Scene
-{
-    constructor ()
-    {
-        super('Game');
+export class Game extends Scene {
+    constructor() {
+        super("Game");
     }
 
-    preload ()
-    {
-        this.load.setPath('assets');
-        
-        this.load.image('background', 'bg.png');
-        this.load.image('logo', 'logo.png');
+    preload() {
+        this.load.setPath("/assets/");
+
+        const monsterTamerAssetsPath = 'images/monster-tamer'
+        const kenneysAssetsPath = 'images/kenneys-assets'
+
+        // Battle background
+        this.load.image(
+            BATTLE_BACKGROUND_ASSET_KEYS.FOREST,
+            `${monsterTamerAssetsPath}/battle-backgrounds/forest-background.png`
+        );
+
+        // Battle assets
+        this.load.image(
+            BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND,
+            `${kenneysAssetsPath}/ui-space-expansion/custom-ui.png`
+        );
+
+        // Health bar
+        this.load.image(
+            HEALTH_BAR_ASSET_KEYS.RIGHT_CAP,
+            `${kenneysAssetsPath}/ui-space-expansion/barHorizontal_green_right.png`
+        );
+
+        this.load.image(
+            HEALTH_BAR_ASSET_KEYS.MIDDLE,
+            `${kenneysAssetsPath}/ui-space-expansion/barHorizontal_green_mid.png`
+        );
+
+        this.load.image(
+            HEALTH_BAR_ASSET_KEYS.LEFT_CAP,
+            `${kenneysAssetsPath}/ui-space-expansion/barHorizontal_green_left.png`
+        );
+
+        // Monster assets
+        this.load.image(
+            MONSTER_ASSET_KEYS.CARNODUSK,
+            `${monsterTamerAssetsPath}/monsters/carnodusk.png`
+        );
+
+        this.load.image(
+            MONSTER_ASSET_KEYS.IGUANIGNITE,
+            `${monsterTamerAssetsPath}/monsters/iguanignite.png`
+        );
     }
 
-    create ()
-    {
-        
-        this.add.image(512, 384, 'background');
-        this.add.image(512, 350, 'logo').setDepth(100);
-        this.add.text(512, 490, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5).setDepth(100);
-        
+    create() {
+        this.add.image(512, 384, BATTLE_BACKGROUND_ASSET_KEYS.FOREST);
     }
 }
