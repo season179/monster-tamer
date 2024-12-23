@@ -6,20 +6,11 @@ import {
     HEALTH_BAR_ASSET_KEYS,
     MONSTER_ASSET_KEYS,
 } from "../assets/assets-keys";
-
-enum BATTLE_MENU_OPTIONS {
-    FIGHT = "FIGHT",
-    SWITCH = "SWITCH",
-    ITEM = "ITEM",
-    FLEE = "FLEE",
-}
-
-const battleUiTextStyle = {
-    color: "black",
-    fontSize: "30px",
-};
+import { BattleMenu } from "../battle/ui/menu/battle-menu";
 
 export class BattleScene extends Scene {
+    private battleMenu: BattleMenu;
+
     constructor() {
         super({ key: SCENE_KEYS.BATTLE_SCENE });
     }
@@ -97,26 +88,8 @@ export class BattleScene extends Scene {
         ]);
 
         // render out the main info and sub info panes
-        this.createMainInfoPane();
-        this.add.container(520, 448, [
-            this.createMainInfoSubPane(),
-            this.add.text(55, 22, BATTLE_MENU_OPTIONS.FIGHT, battleUiTextStyle),
-            this.add.text(
-                240,
-                22,
-                BATTLE_MENU_OPTIONS.SWITCH,
-                battleUiTextStyle
-            ),
-            this.add.text(55, 70, BATTLE_MENU_OPTIONS.ITEM, battleUiTextStyle),
-            this.add.text(240, 70, BATTLE_MENU_OPTIONS.FLEE, battleUiTextStyle),
-        ]);
-
-        this.add.container(0, 448, [
-            this.add.text(55, 22, "slash", battleUiTextStyle),
-            this.add.text(240, 22, "growl", battleUiTextStyle),
-            this.add.text(55, 70, "-", battleUiTextStyle),
-            this.add.text(240, 70, "-", battleUiTextStyle),
-        ]);
+        this.battleMenu = new BattleMenu(this);
+        this.battleMenu.showMainBattleMenu();
     }
 
     private createHealthBar(
@@ -147,33 +120,5 @@ export class BattleScene extends Scene {
             .setScale(1, scaleY);
 
         return this.add.container(x, y, [leftCap, middle, rightCap]);
-    }
-
-    private createMainInfoPane() {
-        const padding = 4;
-        const rectangleHeight = 124;
-        console.log(this.scale.height);
-
-        this.add
-            .rectangle(
-                0,
-                this.scale.height - rectangleHeight - padding,
-                this.scale.width - padding * 2,
-                rectangleHeight,
-                0xede4f3,
-                1
-            )
-            .setOrigin(0)
-            .setStrokeStyle(8, 0xe4434a, 1);
-    }
-
-    private createMainInfoSubPane() {
-        const rectangleWidth = 500;
-        const rectangleHeight = 124;
-
-        return this.add
-            .rectangle(0, 0, rectangleWidth, rectangleHeight, 0xede4f3, 1)
-            .setOrigin(0)
-            .setStrokeStyle(8, 0x805ac2, 1);
     }
 }
