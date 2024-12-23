@@ -1,5 +1,10 @@
 import { Scene } from "phaser";
-import { BATTLE_ASSET_KEYS, BATTLE_BACKGROUND_ASSET_KEYS, HEALTH_BAR_ASSET_KEYS, MONSTER_ASSET_KEYS } from "../assets/assets-keys";
+import {
+    BATTLE_ASSET_KEYS,
+    BATTLE_BACKGROUND_ASSET_KEYS,
+    HEALTH_BAR_ASSET_KEYS,
+    MONSTER_ASSET_KEYS,
+} from "../assets/assets-keys";
 
 export class Game extends Scene {
     constructor() {
@@ -9,8 +14,8 @@ export class Game extends Scene {
     preload() {
         this.load.setPath("/assets/");
 
-        const monsterTamerAssetsPath = 'images/monster-tamer'
-        const kenneysAssetsPath = 'images/kenneys-assets'
+        const monsterTamerAssetsPath = "images/monster-tamer";
+        const kenneysAssetsPath = "images/kenneys-assets";
 
         // Battle background
         this.load.image(
@@ -53,6 +58,11 @@ export class Game extends Scene {
     }
 
     create() {
-        this.add.image(512, 384, BATTLE_BACKGROUND_ASSET_KEYS.FOREST);
+        // 512, 384
+        this.add.image(
+            this.scale.width / 2,
+            this.scale.height / 2,
+            BATTLE_BACKGROUND_ASSET_KEYS.FOREST
+        );
     }
 }
