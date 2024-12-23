@@ -7,21 +7,31 @@ import {
     MONSTER_ASSET_KEYS,
 } from "../assets/assets-keys";
 
+enum BATTLE_MENU_OPTIONS {
+    FIGHT = "FIGHT",
+    SWITCH = "SWITCH",
+    ITEM = "ITEM",
+    FLEE = "FLEE",
+}
+
+const battleUiTextStyle = {
+    color: "black",
+    fontSize: "30px",
+};
+
 export class BattleScene extends Scene {
     constructor() {
         super({ key: SCENE_KEYS.BATTLE_SCENE });
     }
 
     create() {
-        // 512, 384
-        console.log(`[${BattleScene.name}] create invoked`);
         // create main background
         this.add.image(0, 0, BATTLE_BACKGROUND_ASSET_KEYS.FOREST).setOrigin(0);
 
         // render out the player and enemy monsters
-        this.add.image(764, 144, MONSTER_ASSET_KEYS.CARNODUSK).setOrigin(0);
+        this.add.image(640, 18, MONSTER_ASSET_KEYS.CARNODUSK).setOrigin(0);
         this.add
-            .image(256, 316, MONSTER_ASSET_KEYS.IGUANIGNITE)
+            .image(120, 190, MONSTER_ASSET_KEYS.IGUANIGNITE)
             .setOrigin(0)
             .setFlipX(true);
 
@@ -40,7 +50,7 @@ export class BattleScene extends Scene {
                 .image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND)
                 .setOrigin(0),
             playerMonsterName,
-            this.createHealth(34, 34),
+            this.createHealthBar(34, 34),
             this.add.text(playerMonsterName.width + 35, 23, "L5", {
                 color: "#ED474B",
                 fontSize: "28px",
@@ -74,7 +84,7 @@ export class BattleScene extends Scene {
                 .setOrigin(0)
                 .setScale(1, 0.8),
             enemyMonsterName,
-            this.createHealth(34, 34),
+            this.createHealthBar(34, 34),
             this.add.text(enemyMonsterName.width + 35, 23, "L5", {
                 color: "#ED474B",
                 fontSize: "28px",
@@ -85,9 +95,34 @@ export class BattleScene extends Scene {
                 fontStyle: "italic",
             }),
         ]);
+
+        // render out the main info and sub info panes
+        this.createMainInfoPane();
+        this.add.container(520, 448, [
+            this.createMainInfoSubPane(),
+            this.add.text(55, 22, BATTLE_MENU_OPTIONS.FIGHT, battleUiTextStyle),
+            this.add.text(
+                240,
+                22,
+                BATTLE_MENU_OPTIONS.SWITCH,
+                battleUiTextStyle
+            ),
+            this.add.text(55, 70, BATTLE_MENU_OPTIONS.ITEM, battleUiTextStyle),
+            this.add.text(240, 70, BATTLE_MENU_OPTIONS.FLEE, battleUiTextStyle),
+        ]);
+
+        this.add.container(0, 448, [
+            this.add.text(55, 22, "slash", battleUiTextStyle),
+            this.add.text(240, 22, "growl", battleUiTextStyle),
+            this.add.text(55, 70, "-", battleUiTextStyle),
+            this.add.text(240, 70, "-", battleUiTextStyle),
+        ]);
     }
 
-    private createHealth(x: number, y: number): Phaser.GameObjects.Container {
+    private createHealthBar(
+        x: number,
+        y: number
+    ): Phaser.GameObjects.Container {
         const scaleY = 0.7;
 
         const leftCap: Phaser.GameObjects.Image = this.add
@@ -112,5 +147,33 @@ export class BattleScene extends Scene {
             .setScale(1, scaleY);
 
         return this.add.container(x, y, [leftCap, middle, rightCap]);
+    }
+
+    private createMainInfoPane() {
+        const padding = 4;
+        const rectangleHeight = 124;
+        console.log(this.scale.height);
+
+        this.add
+            .rectangle(
+                0,
+                this.scale.height - rectangleHeight - padding,
+                this.scale.width - padding * 2,
+                rectangleHeight,
+                0xede4f3,
+                1
+            )
+            .setOrigin(0)
+            .setStrokeStyle(8, 0xe4434a, 1);
+    }
+
+    private createMainInfoSubPane() {
+        const rectangleWidth = 500;
+        const rectangleHeight = 124;
+
+        return this.add
+            .rectangle(0, 0, rectangleWidth, rectangleHeight, 0xede4f3, 1)
+            .setOrigin(0)
+            .setStrokeStyle(8, 0x805ac2, 1);
     }
 }

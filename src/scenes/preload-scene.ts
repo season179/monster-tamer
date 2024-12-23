@@ -15,7 +15,6 @@ export class PreloadScene extends Scene {
     }
 
     preload() {
-        console.log(`[${PreloadScene.name}] preload invoked`);
         this.load.setPath("/assets/");
 
         const monsterTamerAssetsPath = "images/monster-tamer";
@@ -62,8 +61,6 @@ export class PreloadScene extends Scene {
     }
 
     create() {
-        // 512, 384
-        console.log(`[${PreloadScene.name}] create invoked`);
         this.scene.start(SCENE_KEYS.BATTLE_SCENE);
     }
 }
