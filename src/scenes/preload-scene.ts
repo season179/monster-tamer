@@ -5,13 +5,17 @@ import {
     HEALTH_BAR_ASSET_KEYS,
     MONSTER_ASSET_KEYS,
 } from "../assets/assets-keys";
+import { SCENE_KEYS } from "./scene-keys";
 
-export class Game extends Scene {
+export class PreloadScene extends Scene {
     constructor() {
-        super("Game");
+        super({
+            key: SCENE_KEYS.PRELOAD_SCENE,
+        });
     }
 
     preload() {
+        console.log(`[${PreloadScene.name}] preload invoked`);
         this.load.setPath("/assets/");
 
         const monsterTamerAssetsPath = "images/monster-tamer";
@@ -59,10 +63,7 @@ export class Game extends Scene {
 
     create() {
         // 512, 384
-        this.add.image(
-            this.scale.width / 2,
-            this.scale.height / 2,
-            BATTLE_BACKGROUND_ASSET_KEYS.FOREST
-        );
+        console.log(`[${PreloadScene.name}] create invoked`);
+        this.scene.start(SCENE_KEYS.BATTLE_SCENE);
     }
 }

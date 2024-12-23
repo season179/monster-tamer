@@ -1,4 +1,6 @@
-import { Game as MainGame } from "./scenes/Game";
+import { SCENE_KEYS } from "./scenes/scene-keys";
+import { BattleScene } from "./scenes/battle-scene";
+import { PreloadScene } from "./scenes/preload-scene";
 import { CANVAS, Game, Scale, Types } from "phaser";
 
 //  Find out more information about the Game Config at:
@@ -6,9 +8,6 @@ import { CANVAS, Game, Scale, Types } from "phaser";
 const config: Types.Core.GameConfig = {
     type: CANVAS,
     pixelArt: false,
-    width: 1024,
-    height: 768,
-    backgroundColor: "#000000",
     scale: {
         parent: "game-container",
         width: 1024,
@@ -16,7 +15,11 @@ const config: Types.Core.GameConfig = {
         mode: Scale.FIT,
         autoCenter: Scale.CENTER_BOTH,
     },
-    scene: [MainGame],
+    backgroundColor: "#000000",
 };
 
-export default new Game(config);
+const game = new Game(config);
+
+game.scene.add(SCENE_KEYS.PRELOAD_SCENE, PreloadScene);
+game.scene.add(SCENE_KEYS.BATTLE_SCENE, BattleScene);
+game.scene.start(SCENE_KEYS.PRELOAD_SCENE);
