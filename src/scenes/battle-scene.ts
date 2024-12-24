@@ -5,10 +5,12 @@ import { SCENE_KEYS } from "../scenes/scene-keys";
 import { Background } from "../battle/background";
 import { HealthBar } from "../battle/ui/health-bar";
 import { BattleMenu } from "../battle/ui/menu/battle-menu";
+import { BattleMonster } from "../battle/monsters/battle-monsters";
 
 export class BattleScene extends Scene {
     private battleMenu: BattleMenu;
     private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
+    private activeEnemyMonster: BattleMonster;
 
     constructor() {
         super({ key: SCENE_KEYS.BATTLE_SCENE });
@@ -20,7 +22,24 @@ export class BattleScene extends Scene {
         background.showForest();
 
         // render out the player and enemy monsters
-        this.add.image(640, 18, MONSTER_ASSET_KEYS.CARNODUSK).setOrigin(0);
+        // 640, 18
+        this.activeEnemyMonster = new BattleMonster(
+            {
+                scene: this,
+                monsterDetails: {
+                    name: MONSTER_ASSET_KEYS.CARNODUSK,
+                    assetKey: MONSTER_ASSET_KEYS.CARNODUSK,
+                    assetFrame: 0,
+                    maxHP: 25,
+                    currentHP: 25,
+                    baseAttack: 5,
+                    attackIds: [],
+                },
+            },
+            { x: 768, y: 144 }
+        );
+        // this.add.image(640, 18, MONSTER_ASSET_KEYS.CARNODUSK, 0);
+        
         this.add
             .image(120, 190, MONSTER_ASSET_KEYS.IGUANIGNITE)
             .setOrigin(0)
@@ -61,11 +80,12 @@ export class BattleScene extends Scene {
         ]);
 
         // render out the enemy health bar
-        const enemyHealthBar = new HealthBar(this, 34, 34);
+        // const enemyHealthBar = new HealthBar(this, 34, 34);
+        const enemyHealthBar = this.activeEnemyMonster.healthBar;
         const enemyMonsterName = this.add.text(
             30,
             20,
-            MONSTER_ASSET_KEYS.IGUANIGNITE,
+            MONSTER_ASSET_KEYS.CARNODUSK,
             {
                 color: "#7E3D3F",
                 fontSize: "32px",
