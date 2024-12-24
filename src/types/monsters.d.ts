@@ -1,26 +1,28 @@
 import { Scene } from 'phaser';
 
-type BattleMonsterConfig = {
+interface Monster {
     name: string;
     assetKey: string;
     assetFrame: number;
+    currentLevel: number;
     maxHP: number;
     currentHP: number;
     baseAttack: number;
     attackIds: number[];
 };
 
-type Config = {
+interface BattleMonsterConfig {
     scene: Scene;
-    monsterDetails: BattleMonsterConfig;
+    monsterDetails: Monster;
+    scaleHealthBarBackgroundImageByY?: number = 1;
 };
 
-type Coordinate = {
+interface Coordinate {
     x: number;
     y: number;
 };
 
-type Attack = {
+interface Attack {
     id: number;
     name: string;
     animationName: string;

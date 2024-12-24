@@ -1,29 +1,29 @@
 import {
     Attack,
+    Monster,
     BattleMonsterConfig,
-    Config,
     Coordinate,
 } from "../../types/monsters";
 import { GameObjects, Scene } from "phaser";
 import { HealthBar } from "../ui/health-bar";
+import { BATTLE_ASSET_KEYS } from "../../assets/assets-keys";
 
 export class BattleMonster {
     protected _scene: Scene;
-    protected _monsterDetails: BattleMonsterConfig;
+    protected _monsterDetails: Monster;
     protected _healthBar: HealthBar;
     protected _phaserGameObject: GameObjects.Image;
     protected _currentHealth: number;
     protected _maxHealth: number;
     protected _monsterAttacks: Attack[];
+    protected _phaserHealthBarGameContainer: GameObjects.Container;
 
-    constructor(config: Config, position: Coordinate) {
+    constructor(config: BattleMonsterConfig, position: Coordinate) {
         this._scene = config.scene;
         this._monsterDetails = config.monsterDetails;
         this._currentHealth = this._monsterDetails.currentHP;
         this._maxHealth = this._monsterDetails.maxHP;
         this._monsterAttacks = [];
-
-        this._healthBar = new HealthBar(this._scene, 34, 34);
 
         this._phaserGameObject = this._scene.add.image(
             position.x,
@@ -31,6 +31,7 @@ export class BattleMonster {
             this._monsterDetails.assetKey,
             this._monsterDetails.assetFrame || 0
         );
+        this.createHealthBarComponents(config.scaleHealthBarBackgroundImageByY);
     }
 
     get healthBar() {
@@ -53,6 +54,10 @@ export class BattleMonster {
         return this._monsterDetails.baseAttack;
     }
 
+    get level() {
+        return this._monsterDetails.currentLevel;
+    }
+
     takeDamage(damage: number, callback?: () => void) {
         // update current monster health and animate health bar
         this._currentHealth -= damage;
@@ -65,5 +70,42 @@ export class BattleMonster {
             this._currentHealth / this._maxHealth,
             { callback }
         );
+    }
+
+    private createHealthBarComponents(scaleHealthBarBackgroundImageByY = 1) {
+        this._healthBar = new HealthBar(this._scene, 34, 34);
+
+        const monsterNameGameText = this._scene.add.text(30, 20, this.name, {
+            color: "#7E3D3F",
+            fontSize: "32px",
+        });
+
+        const healthBarBgImage = this._scene.add
+            .image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND)
+            .setOrigin(0)
+            .setScale(1, scaleHealthBarBackgroundImageByY);
+
+        const monsterHealthBarLevelText = this._scene.add.text(
+            monsterNameGameText.width + 35,
+            23,
+            `L${this.level}`,
+            {
+                color: "#ED474B",
+                fontSize: "28px",
+            }
+        );
+        const monsterHpText = this._scene.add.text(30, 55, "HP", {
+            color: "#FF6505",
+            fontSize: "24px",
+            fontStyle: "italic",
+        });
+
+        this._phaserHealthBarGameContainer = this._scene.add.container(0, 0, [
+            healthBarBgImage,
+            monsterNameGameText,
+            this._healthBar.container,
+            monsterHealthBarLevelText,
+            monsterHpText,
+        ]);
     }
 }
