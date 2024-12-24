@@ -7,9 +7,11 @@ import {
     MONSTER_ASSET_KEYS,
 } from "../assets/assets-keys";
 import { BattleMenu } from "../battle/ui/menu/battle-menu";
+import { DIRECTION } from "../common/direction";
 
 export class BattleScene extends Scene {
     private battleMenu: BattleMenu;
+    private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
 
     constructor() {
         super({ key: SCENE_KEYS.BATTLE_SCENE });
@@ -90,8 +92,49 @@ export class BattleScene extends Scene {
         // render out the main info and sub info panes
         this.battleMenu = new BattleMenu(this);
         this.battleMenu.showMainBattleMenu();
+
+        this.cursorKeys = this.input.keyboard?.createCursorKeys();
     }
 
+    update() {
+        const wasSpaceKeyPressed = Phaser.Input.Keyboard.JustDown(
+            this.cursorKeys.space
+        );
+        // console.log(this.cursorKeys.space.isDown); // This is for when space key is pressed and hold down.
+
+        if (wasSpaceKeyPressed) {
+            this.battleMenu.handlePlayerInput("OK");
+            return;
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursorKeys.shift)) {
+            this.battleMenu.handlePlayerInput("CANCEL");
+            return;
+        }
+
+        let selectedDirection = DIRECTION.NONE;
+
+        if (this.cursorKeys.left.isDown) {
+            selectedDirection = DIRECTION.LEFT;
+        } else if (this.cursorKeys.right.isDown) {
+            selectedDirection = DIRECTION.RIGHT;
+        } else if (this.cursorKeys.up.isDown) {
+            selectedDirection = DIRECTION.UP;
+        } else if (this.cursorKeys.down.isDown) {
+            selectedDirection = DIRECTION.DOWN;
+        }
+
+        if (selectedDirection !== DIRECTION.NONE) {
+            this.battleMenu.handlePlayerInput(selectedDirection);
+        }
+    }
+
+    /**
+     * 
+     * @param x the x position to place the health bar container
+     * @param y the y position to place the health bar container
+     * @returns 
+     */
     private createHealthBar(
         x: number,
         y: number

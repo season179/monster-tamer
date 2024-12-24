@@ -1,4 +1,5 @@
 import { MONSTER_ASSET_KEYS } from "../../../assets/assets-keys";
+import { DIRECTION } from "../../../common/direction";
 
 enum BATTLE_MENU_OPTIONS {
     FIGHT = "FIGHT",
@@ -19,6 +20,10 @@ export class BattleMenu {
     private battleTextGameObjectLine1: Phaser.GameObjects.Text;
     private battleTextGameObjectLine2: Phaser.GameObjects.Text;
 
+    /**
+     *
+     * @param scene the Phase 3 scene the battle menu will be added to
+     */
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
 
@@ -46,6 +51,21 @@ export class BattleMenu {
 
     hideMonsterAttackSubMenu() {
         this.moveSelectionSubBattleMenuPhaserContainerGameObject.setAlpha(0);
+    }
+
+    handlePlayerInput(input: "OK" | "CANCEL" | DIRECTION) {
+        console.log(input);
+
+        if (input === "CANCEL") {
+            this.hideMonsterAttackSubMenu();
+            this.showMainBattleMenu();
+            return;
+        }
+
+        if (input === "OK") {
+            this.hideMainBattleMenu();
+            this.showMonsterAttackSubMenu();
+        }
     }
 
     private createMainBattleMenu() {
