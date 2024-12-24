@@ -49,6 +49,22 @@ export class PreloadScene extends Scene {
             `${kenneysAssetsPath}/ui-space-expansion/barHorizontal_green_left.png`
         );
 
+        // Health bar shadow
+        this.load.image(
+            HEALTH_BAR_ASSET_KEYS.RIGHT_CAP_SHADOW,
+            `${kenneysAssetsPath}/ui-space-expansion/barHorizontal_shadow_right.png`
+        );
+
+        this.load.image(
+            HEALTH_BAR_ASSET_KEYS.MIDDLE_SHADOW,
+            `${kenneysAssetsPath}/ui-space-expansion/barHorizontal_shadow_mid.png`
+        );
+
+        this.load.image(
+            HEALTH_BAR_ASSET_KEYS.LEFT_CAP_SHADOW,
+            `${kenneysAssetsPath}/ui-space-expansion/barHorizontal_shadow_left.png`
+        );
+
         // Monster assets
         this.load.image(
             MONSTER_ASSET_KEYS.CARNODUSK,
