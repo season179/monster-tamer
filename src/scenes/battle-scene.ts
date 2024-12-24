@@ -101,17 +101,32 @@ export class BattleScene extends Scene {
             this.cursorKeys.space
         );
         // console.log(this.cursorKeys.space.isDown); // This is for when space key is pressed and hold down.
-        
+
         if (wasSpaceKeyPressed) {
             this.battleMenu.handlePlayerInput("OK");
-            return;
+
+            // check if the player selected an attack, and update display text
+            if (this.battleMenu.selectedAttack === undefined) {
+                return;
+            }
+
+            console.log(
+                `Player selected the following move: ${this.battleMenu.selectedAttack}`
+            );
+            this.battleMenu.hideMonsterAttackSubMenu();
+            this.battleMenu.updateInfoPaneMessagesAndWaitForInput(
+                ["Your monster attacks the enemy"],
+                () => {
+                    this.battleMenu.showMainBattleMenu();
+                }
+            );
         }
-        
+
         if (Phaser.Input.Keyboard.JustDown(this.cursorKeys.shift)) {
             this.battleMenu.handlePlayerInput("CANCEL");
             return;
         }
-        
+
         let selectedDirection = DIRECTION.NONE;
 
         if (this.cursorKeys.left.isDown) {
@@ -130,10 +145,10 @@ export class BattleScene extends Scene {
     }
 
     /**
-     * 
+     *
      * @param x the x position to place the health bar container
      * @param y the y position to place the health bar container
-     * @returns 
+     * @returns
      */
     private createHealthBar(
         x: number,
