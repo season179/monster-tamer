@@ -1,13 +1,13 @@
-import { Scene } from "phaser";
-import { SCENE_KEYS } from "../scenes/scene-keys";
 import {
     BATTLE_ASSET_KEYS,
-    BATTLE_BACKGROUND_ASSET_KEYS,
-    HEALTH_BAR_ASSET_KEYS,
     MONSTER_ASSET_KEYS,
 } from "../assets/assets-keys";
-import { BattleMenu } from "../battle/ui/menu/battle-menu";
+import { Scene } from "phaser";
 import { DIRECTION } from "../common/direction";
+import { SCENE_KEYS } from "../scenes/scene-keys";
+import { Background } from "../battle/background";
+import { HealthBar } from "../battle/ui/health-bar";
+import { BattleMenu } from "../battle/ui/menu/battle-menu";
 
 export class BattleScene extends Scene {
     private battleMenu: BattleMenu;
@@ -19,7 +19,8 @@ export class BattleScene extends Scene {
 
     create() {
         // create main background
-        this.add.image(0, 0, BATTLE_BACKGROUND_ASSET_KEYS.FOREST).setOrigin(0);
+        const background = new Background(this);
+        background.showForest();
 
         // render out the player and enemy monsters
         this.add.image(640, 18, MONSTER_ASSET_KEYS.CARNODUSK).setOrigin(0);
@@ -43,7 +44,7 @@ export class BattleScene extends Scene {
                 .image(0, 0, BATTLE_ASSET_KEYS.HEALTH_BAR_BACKGROUND)
                 .setOrigin(0),
             playerMonsterName,
-            this.createHealthBar(34, 34),
+            new HealthBar(this, 34, 34).container,
             this.add.text(playerMonsterName.width + 35, 23, "L5", {
                 color: "#ED474B",
                 fontSize: "28px",
@@ -77,7 +78,7 @@ export class BattleScene extends Scene {
                 .setOrigin(0)
                 .setScale(1, 0.8),
             enemyMonsterName,
-            this.createHealthBar(34, 34),
+            new HealthBar(this, 34, 34).container,
             this.add.text(enemyMonsterName.width + 35, 23, "L5", {
                 color: "#ED474B",
                 fontSize: "28px",
@@ -142,41 +143,5 @@ export class BattleScene extends Scene {
         if (selectedDirection !== DIRECTION.NONE) {
             this.battleMenu.handlePlayerInput(selectedDirection);
         }
-    }
-
-    /**
-     *
-     * @param x the x position to place the health bar container
-     * @param y the y position to place the health bar container
-     * @returns
-     */
-    private createHealthBar(
-        x: number,
-        y: number
-    ): Phaser.GameObjects.Container {
-        const scaleY = 0.7;
-
-        const leftCap: Phaser.GameObjects.Image = this.add
-            .image(x, y, HEALTH_BAR_ASSET_KEYS.LEFT_CAP)
-            .setOrigin(0, 0.5)
-            .setScale(1, scaleY);
-
-        const middle: Phaser.GameObjects.Image = this.add
-            .image(leftCap.x + leftCap.width, y, HEALTH_BAR_ASSET_KEYS.MIDDLE)
-            .setOrigin(0, 0.5)
-            .setScale(1, scaleY);
-
-        middle.displayWidth = 360;
-
-        const rightCap: Phaser.GameObjects.Image = this.add
-            .image(
-                middle.x + middle.displayWidth,
-                y,
-                HEALTH_BAR_ASSET_KEYS.RIGHT_CAP
-            )
-            .setOrigin(0, 0.5)
-            .setScale(1, scaleY);
-
-        return this.add.container(x, y, [leftCap, middle, rightCap]);
     }
 }
