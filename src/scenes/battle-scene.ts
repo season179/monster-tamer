@@ -93,7 +93,7 @@ export class BattleScene extends Scene {
         this.battleMenu = new BattleMenu(this);
         this.battleMenu.showMainBattleMenu();
 
-        this.cursorKeys = this.input.keyboard?.createCursorKeys();
+        this.cursorKeys = this.input.keyboard!.createCursorKeys();
     }
 
     update() {
@@ -101,17 +101,17 @@ export class BattleScene extends Scene {
             this.cursorKeys.space
         );
         // console.log(this.cursorKeys.space.isDown); // This is for when space key is pressed and hold down.
-
+        
         if (wasSpaceKeyPressed) {
             this.battleMenu.handlePlayerInput("OK");
             return;
         }
-
+        
         if (Phaser.Input.Keyboard.JustDown(this.cursorKeys.shift)) {
             this.battleMenu.handlePlayerInput("CANCEL");
             return;
         }
-
+        
         let selectedDirection = DIRECTION.NONE;
 
         if (this.cursorKeys.left.isDown) {
