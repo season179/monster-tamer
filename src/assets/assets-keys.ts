@@ -23,3 +23,7 @@ export enum HEALTH_BAR_ASSET_KEYS {
 export enum UI_ASSET_KEYS {
     CURSOR = "CURSOR",
 }
+
+export enum DATA_ASSET_KEYS {
+    ATTACKS = "ATTACKS",
+}

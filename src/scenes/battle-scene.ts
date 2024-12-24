@@ -1,10 +1,9 @@
-import { BATTLE_ASSET_KEYS, MONSTER_ASSET_KEYS } from "../assets/assets-keys";
 import { Scene } from "phaser";
 import { DIRECTION } from "../common/direction";
 import { SCENE_KEYS } from "../scenes/scene-keys";
 import { Background } from "../battle/background";
-import { HealthBar } from "../battle/ui/health-bar";
 import { BattleMenu } from "../battle/ui/menu/battle-menu";
+import { MONSTER_ASSET_KEYS } from "../assets/assets-keys";
 import { EnemyBattleMonster } from "../battle/monsters/enemy-battle-monster";
 import { PlayerBattleMonster } from "../battle/monsters/player-battle-monster";
 
@@ -13,9 +12,14 @@ export class BattleScene extends Scene {
     private cursorKeys: Phaser.Types.Input.Keyboard.CursorKeys;
     private activeEnemyMonster: EnemyBattleMonster;
     private activePlayerMonster: PlayerBattleMonster;
+    private activePlayerAttackIndex: number;
 
     constructor() {
         super({ key: SCENE_KEYS.BATTLE_SCENE });
+    }
+
+    init() {
+        this.activePlayerAttackIndex = -1;
     }
 
     create() {
@@ -33,7 +37,7 @@ export class BattleScene extends Scene {
                 maxHP: 25,
                 currentHP: 25,
                 baseAttack: 5,
-                attackIds: [],
+                attackIds: [1],
                 currentLevel: 5,
             },
         });
@@ -47,20 +51,16 @@ export class BattleScene extends Scene {
                 maxHP: 25,
                 currentHP: 25,
                 baseAttack: 5,
-                attackIds: [],
+                attackIds: [2, 1],
                 currentLevel: 5,
             },
         });
 
         // render out the main info and sub info panes
-        this.battleMenu = new BattleMenu(this);
+        this.battleMenu = new BattleMenu(this, this.activePlayerMonster);
         this.battleMenu.showMainBattleMenu();
 
         this.cursorKeys = this.input.keyboard!.createCursorKeys();
-
-        this.activeEnemyMonster.takeDamage(20, () => {
-            this.activePlayerMonster.takeDamage(15);
-        });
     }
 
     update() {
@@ -77,16 +77,19 @@ export class BattleScene extends Scene {
                 return;
             }
 
+            this.activePlayerAttackIndex = this.battleMenu.selectedAttack;
+
+            if (
+                !this.activePlayerMonster.attacks[this.activePlayerAttackIndex]
+            ) {
+                return;
+            }
             console.log(
                 `Player selected the following move: ${this.battleMenu.selectedAttack}`
             );
+
             this.battleMenu.hideMonsterAttackSubMenu();
-            this.battleMenu.updateInfoPaneMessagesAndWaitForInput(
-                ["Your monster attacks the enemy"],
-                () => {
-                    this.battleMenu.showMainBattleMenu();
-                }
-            );
+            this.handleBattleSequence();
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.cursorKeys.shift)) {
@@ -109,5 +112,50 @@ export class BattleScene extends Scene {
         if (selectedDirection !== DIRECTION.NONE) {
             this.battleMenu.handlePlayerInput(selectedDirection);
         }
+    }
+
+    private handleBattleSequence() {
+        // general battle flow
+        // show attack used, brief pause
+        // then play attack animation, brief pause
+        // then play damage animation, brief pause
+        // then play health bar animation, brief pause
+        // then repeat the steps above for the other monster
+
+        this.playerAttack();
+    }
+
+    private playerAttack() {
+        this.battleMenu.updateInfoPaneMessagesAndWaitForInput(
+            [
+                `${this.activePlayerMonster.name} used ${
+                    this.activePlayerMonster.attacks[
+                        this.activePlayerAttackIndex
+                    ].name
+                }`,
+            ],
+            () => {
+                this.time.delayedCall(500, () => {
+                    this.activeEnemyMonster.takeDamage(20, () => {
+                        this.enemyAttack();
+                    });
+                });
+            }
+        );
+    }
+
+    private enemyAttack() {
+        this.battleMenu.updateInfoPaneMessagesAndWaitForInput(
+            [
+                `For ${this.activeEnemyMonster.name} used ${this.activeEnemyMonster.attacks[0].name}`,
+            ],
+            () => {
+                this.time.delayedCall(500, () => {
+                    this.activePlayerMonster.takeDamage(20, () => {
+                        this.battleMenu.showMainBattleMenu();
+                    });
+                });
+            }
+        );
     }
 }

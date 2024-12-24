@@ -1,12 +1,13 @@
 import { DIRECTION } from "../../../common/direction";
 import { exhaustiveGuard } from "../../../utils/guard";
 import { BATTLE_UI_TEXT_STYLE } from "./battle-menu-config";
-import { MONSTER_ASSET_KEYS, UI_ASSET_KEYS } from "../../../assets/assets-keys";
+import { UI_ASSET_KEYS } from "../../../assets/assets-keys";
 import {
     BATTLE_MENU_OPTIONS,
     ATTACK_MOVE_OPTIONS,
     ACTIVE_BATTLE_MENU,
 } from "./battle-menu-options";
+import { BattleMonster } from "../../monsters/battle-monsters";
 
 enum BATTLE_MENU_CURSOR_POSITION {
     x = 42,
@@ -33,13 +34,15 @@ export class BattleMenu {
     private queuedInfoPanelCallback: (() => void) | undefined;
     private waitingForPlayerInput: boolean;
     private selectedAttackIndex: number | undefined;
+    private activePlayerMonster: BattleMonster;
 
     /**
      *
      * @param scene the Phase 3 scene the battle menu will be added to
      */
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Phaser.Scene, activePlayerMonster: BattleMonster) {
         this.scene = scene;
+        this.activePlayerMonster = activePlayerMonster;
         this.activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_MAIN;
         this.selectedBattleMenuOption = BATTLE_MENU_OPTIONS.FIGHT;
         this.selectedAttackMenuOption = ATTACK_MOVE_OPTIONS.MOVE_1;
@@ -87,6 +90,7 @@ export class BattleMenu {
     }
 
     hideMonsterAttackSubMenu() {
+        this.activeBattleMenu = ACTIVE_BATTLE_MENU.BATTLE_MAIN;
         this.moveSelectionSubBattleMenuPhaserContainerGameObject.setAlpha(0);
     }
 
@@ -165,11 +169,10 @@ export class BattleMenu {
             BATTLE_UI_TEXT_STYLE
         );
 
-        // TODO: update to use monster data that is passed into this class instance
         this.battleTextGameObjectLine2 = this.scene.add.text(
             20,
             512,
-            `${MONSTER_ASSET_KEYS.IGUANIGNITE} do next?`,
+            `${this.activePlayerMonster.name} do next?`,
             BATTLE_UI_TEXT_STYLE
         );
 
@@ -230,12 +233,17 @@ export class BattleMenu {
             .setOrigin(0.5)
             .setScale(2.5);
 
+        const attackNames: string[] = [];
+        for (let i = 0; i < 4; i++) {
+            attackNames.push(this.activePlayerMonster.attacks[i]?.name || "-");
+        }
+
         this.moveSelectionSubBattleMenuPhaserContainerGameObject =
             this.scene.add.container(0, 448, [
-                this.scene.add.text(55, 22, "slash", BATTLE_UI_TEXT_STYLE),
-                this.scene.add.text(240, 22, "growl", BATTLE_UI_TEXT_STYLE),
-                this.scene.add.text(55, 70, "-", BATTLE_UI_TEXT_STYLE),
-                this.scene.add.text(240, 70, "-", BATTLE_UI_TEXT_STYLE),
+                this.scene.add.text(55, 22, attackNames[0], BATTLE_UI_TEXT_STYLE),
+                this.scene.add.text(240, 22, attackNames[1], BATTLE_UI_TEXT_STYLE),
+                this.scene.add.text(55, 70, attackNames[2], BATTLE_UI_TEXT_STYLE),
+                this.scene.add.text(240, 70, attackNames[3], BATTLE_UI_TEXT_STYLE),
                 this.attackBattleMenuCursorPhaserImageGameObject,
             ]);
 
